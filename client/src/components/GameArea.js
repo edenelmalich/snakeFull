@@ -16,17 +16,13 @@ import { setModal, setModalText } from '../actions/modalAction';
 import { setScore, setEnemyScore } from '../actions/gameAction';
 
 // Function to get random cord
-const getRandomCord = () => {
-  let min = 1;
-  let max = 97;
-  let x = Math.floor((Math.random() * (max - min + 1) + min) / 2) * 2;
-  let y = Math.floor((Math.random() * (max - min + 1) + min) / 2) * 2;
-  return [x, y];
-};
+const socket = socketIOClient('http://localhost:4000');
+
 // Default state for the game
+
 const initialState = {
-  food: getRandomCord(),
-  poison: getRandomCord(),
+  food: [30, 30],
+  poison: [80, 80],
   speed: 100,
   direction: 'RIGHT',
   enemyDirection: 'RIGHT',
@@ -43,38 +39,39 @@ const initialState = {
   spinner: false
 };
 
-// socket = io.connect( 'http://127.0.0.1:3000', {
-//     reconnection: true,
-//     reconnectionDelay: 1000,
-//     reconnectionDelayMax : 5000,
-//     reconnectionAttempts: 99999
-// } );
-
-// socket.on('initialState', receivedInitialState => {
-//   initialState = receivedInitialState;
-// });
-
-const socket = socketIOClient.connect('http://localhost:4000');
-
-// socket.on('enemyChangedDirection', receivedPayload => {
-//   this.setState({ enemyDirection: receivedPayload.direction });
-// });
-
 class GameArea extends Component {
   state = initialState;
   // ComponentWillMount
-  componentWillMount() {}
+  componentWillMount() {
+    socket.off('getAppleCord');
+  }
   componentDidMount() {
     setInterval(this.moveSnake, this.state.speed);
     setInterval(this.moveEnemySnake, this.state.speed);
     socket.on('enemyChangedDirection', receivedPayload => {
       this.setState({ enemyDirection: receivedPayload.direction });
     });
+    socket.on('newEnemySnake', receivedPayload => {
+      this.setState({ snake2Dots: receivedPayload.snakeEnemyDots });
+    });
+
+    socket.on('newAppleCord', receivedPayload => {
+      this.setState({ food: receivedPayload.food });
+    });
+    socket.on('enemyAte', () => {
+      this.props.setEnemyScore(this.props.getEnemyScore + 1);
+      const isPlayerSnake = false;
+      this.enlargeSnake(isPlayerSnake);
+    });
+
     document.onkeydown = this.onKeyDown;
   }
   componentDidUpdate() {
-    if (this.state.snakeDots.length === 0) {
-      this.onGameOver();
+    if (
+      this.state.snakeDots.length === 0 ||
+      this.state.snake2Dots.length === 0
+    ) {
+      this.GameOver();
     } else {
       this.checkIfOutOfBorders();
       this.checkIfCollapsed();
@@ -155,64 +152,72 @@ class GameArea extends Component {
       snake2Dots: dots
     });
   };
+
+  checkEat = () => {
+    return;
+  };
+
   checkIfEat = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
     let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
+    const playerName = this.props.location.state.playerName;
     let food = this.state.food;
     if (head[0] === food[0] && head[1] === food[1]) {
-      this.setState({
-        food: getRandomCord()
+      socket.emit('snakeAte', {
+        playerName
       });
       this.props.setScore(this.props.getScore + 1);
-      this.enlargeSnake('snake');
+      const isPlayerSnake = true;
+      this.enlargeSnake(isPlayerSnake);
       this.increaseSpeed();
     }
-    if (headEnemy[0] === food[0] && headEnemy[1] === food[1]) {
-      this.setState({
-        food: getRandomCord()
-      });
-      this.props.setEnemyScore(this.props.getEnemyScore + 1);
-      this.enlargeSnake('snakeEnemy');
-      this.increaseSpeed();
-    }
+    // if (headEnemy[0] === food[0] && headEnemy[1] === food[1]) {
+    //   socket.emit('snakeEnemyEat', {
+    //     playerName,
+    //     snake2Eat: getRandomCord()
+    //   });
+    //   this.props.setEnemyScore(this.props.getEnemyScore + 1);
+    //   this.enlargeSnake('snakeEnemy');
+    //   this.increaseSpeed();
+    // }
   };
   checkIfEatPoison = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
     let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
     let poison = this.state.poison;
     if (head[0] === poison[0] && head[1] === poison[1]) {
-      this.setState({
-        poison: getRandomCord()
-      });
+      // this.setState({
+      //   poison: getRandomCord()
+      // });
       if (this.props.getScore > 0) {
         this.prop.setScore(this.props.getScore - 1);
       }
       this.SnakePoison('snake');
       this.decreaseSpeed();
     }
-    if (headEnemy[0] === poison[0] && headEnemy[1] === poison[1]) {
-      this.setState({
-        poison: getRandomCord()
-      });
-      if (this.props.getEnemyScore > 0) {
-        this.prop.setEnemyScore(this.props.getEnemyScore - 1);
-      }
-      this.SnakePoison('snakeEnemy');
-      this.decreaseSpeed();
-    }
+    // if (headEnemy[0] === poison[0] && headEnemy[1] === poison[1]) {
+    //   // this.setState({
+    //   //   poison: getRandomCord()
+    //   // });
+    //   if (this.props.getEnemyScore > 0) {
+    //     this.prop.setEnemyScore(this.props.getEnemyScore - 1);
+    //   }
+    //   this.SnakePoison('snakeEnemy');
+    //   this.decreaseSpeed();
+    // }
   };
   checkIfOutOfBorders = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
     let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
     if (
       head[0] >= 100 ||
+      head[1] >= 100 ||
       headEnemy[0] >= 100 ||
       headEnemy[1] >= 100 ||
-      head[1] >= 100 ||
       head[0] < 0 ||
+      head[1] < 0 ||
       headEnemy[0] < 0 ||
-      headEnemy[1] < 0 ||
-      head[1] < 0
+      headEnemy[1] < 0
     ) {
       this.GameOver();
     }
@@ -256,18 +261,19 @@ class GameArea extends Component {
     });
   };
 
-  enlargeSnake = snakeType => {
-    let newSnake = [...this.state.snakeDots];
-    let newEnemySnake = [...this.state.snake2Dots];
-    if (snakeType === 'snake') {
+  enlargeSnake = isPlayerSnake => {
+    let newSnake;
+    if (isPlayerSnake) {
+      newSnake = [...this.state.snakeDots];
       newSnake.unshift([]);
       this.setState({
         snakeDots: newSnake
       });
     } else {
-      newEnemySnake.unshift([]);
+      newSnake = [...this.state.snake2Dots];
+      newSnake.unshift([]);
       this.setState({
-        snake2Dots: newEnemySnake
+        snake2Dots: newSnake
       });
     }
   };
@@ -282,9 +288,6 @@ class GameArea extends Component {
       });
     } else {
       newEnemySnake.shift([]);
-      this.setState({
-        snake2Dots: newEnemySnake
-      });
     }
   };
 

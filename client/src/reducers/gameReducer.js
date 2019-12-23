@@ -18,6 +18,7 @@ const gameReducer = (state = initialState, action) => {
       return { ...state, getEnemyScore: payload };
     case SET_CLIENTS_COUNTER:
       return { ...state, getClientsCounter: payload };
+
     default:
       return state;
   }

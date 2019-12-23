@@ -10,6 +10,14 @@ const server = http.createServer(app);
 
 const io = socketIO(server);
 
+const getRandomCord = () => {
+  let min = 1;
+  let max = 97;
+  let x = Math.floor((Math.random() * (max - min + 1) + min) / 2) * 2;
+  let y = Math.floor((Math.random() * (max - min + 1) + min) / 2) * 2;
+  return [x, y];
+};
+
 let gameSession = {
   playerA: {
     name: '',
@@ -26,7 +34,7 @@ let gameSession = {
 };
 app.use(express.static(path.join(__dirname, '../../build')));
 app.get('/', (req, res, next) => {
-  res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  res.sendFile(__dirname + './index.html');
 });
 io.on('connection', socket => {
   console.log('New user connected');
@@ -47,6 +55,16 @@ io.on('connection', socket => {
       gameSession.playerA.name = name;
     }
   });
+  // ------------------------------------------------
+
+  socket.on('snakeAte', data => {
+    socket.broadcast.emit('enemyAte', {
+      name: data.name
+    });
+    //get random new apple coordinates and send to all players
+    io.emit('newAppleCord', { food: getRandomCord() });
+  });
+
   setInterval(() => {
     io.emit('success', gameSession.playerB.socketID !== null ? true : false);
   }, 2000);

@@ -20,12 +20,14 @@ const ModalGame = ({ getModalState, setModal, getScore, getModalText }) => {
         <Modal.Header closeButton>
           <Modal.Title>Game over</Modal.Title>
         </Modal.Header>
-        {getModalText ? (
+        {!getModalText ? (
           <Fragment>
             <Modal.Body>Game Over. Your score is: {getScore} </Modal.Body>
           </Fragment>
         ) : (
-          <Fragment>Draw</Fragment>
+          <Fragment>
+            <Modal.Body>Draw</Modal.Body>
+          </Fragment>
         )}
         <Modal.Footer>
           <Button onClick={() => setExit(true)} variant='secondary'>
