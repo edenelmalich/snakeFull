@@ -26,7 +26,7 @@ let gameSession = {
 };
 app.use(express.static(path.join(__dirname, '../../build')));
 app.get('/', (req, res, next) => {
-  res.sendFile(__dirname + './index.html');
+  res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
 });
 io.on('connection', socket => {
   console.log('New user connected');
