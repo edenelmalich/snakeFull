@@ -7,6 +7,9 @@
     "start": "node server",
     "server": "nodemon server"
   },
+  "engines": {
+    "node": "6.12.0"
+  },
   "author": "Eden elmalich",
   "license": "MIT",
   "dependencies": {
