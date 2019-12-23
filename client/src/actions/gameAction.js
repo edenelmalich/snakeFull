@@ -1,4 +1,9 @@
-import { SET_SCORE, SET_CLIENTS_COUNTER, SET_ENEMY_SCORE } from './typeAction';
+import {
+  SET_SCORE,
+  SET_CLIENTS_COUNTER,
+  SET_ENEMY_SCORE,
+  SNAKE_DOTS
+} from './typeAction';
 
 export const setScore = score => dispatch => {
   dispatch({
@@ -16,5 +21,11 @@ export const setClientsCounter = stateSuccess => dispatch => {
   dispatch({
     type: SET_CLIENTS_COUNTER,
     payload: stateSuccess
+  });
+};
+export const setSnakeDot = snakeDots => dispatch => {
+  dispatch({
+    type: SNAKE_DOTS,
+    payload: snakeDots
   });
 };

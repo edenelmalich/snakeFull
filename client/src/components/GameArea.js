@@ -13,12 +13,16 @@ import '../css/Game.css';
 // Redux
 import { connect } from 'react-redux';
 import { setModal, setModalText } from '../actions/modalAction';
-import { setScore, setEnemyScore } from '../actions/gameAction';
-
+import { setScore, setEnemyScore, setSnakeDot } from '../actions/gameAction';
+import { debounce } from 'lodash';
 // Function to get random cord
 const socket = socketIOClient('http://localhost:4000');
 
 // Default state for the game
+
+const emitSnakeAte = debounce(socket => {
+  socket.emit('snakeAte', {});
+}, 250);
 
 const initialState = {
   food: [30, 30],
@@ -42,15 +46,15 @@ const initialState = {
 class GameArea extends Component {
   state = initialState;
   // ComponentWillMount
-  componentWillMount() {
-    socket.off('getAppleCord');
-  }
+  componentWillMount() {}
   componentDidMount() {
     setInterval(this.moveSnake, this.state.speed);
     setInterval(this.moveEnemySnake, this.state.speed);
+
     socket.on('enemyChangedDirection', receivedPayload => {
       this.setState({ enemyDirection: receivedPayload.direction });
     });
+
     socket.on('newEnemySnake', receivedPayload => {
       this.setState({ snake2Dots: receivedPayload.snakeEnemyDots });
     });
@@ -58,8 +62,9 @@ class GameArea extends Component {
     socket.on('newAppleCord', receivedPayload => {
       this.setState({ food: receivedPayload.food });
     });
+
     socket.on('enemyAte', () => {
-      this.props.setEnemyScore(this.props.getEnemyScore + 1);
+      // this.props.setEnemyScore(this.props.getEnemyScore + 1);
       const isPlayerSnake = false;
       this.enlargeSnake(isPlayerSnake);
     });
@@ -67,19 +72,12 @@ class GameArea extends Component {
     document.onkeydown = this.onKeyDown;
   }
   componentDidUpdate() {
-    if (
-      this.state.snakeDots.length === 0 ||
-      this.state.snake2Dots.length === 0
-    ) {
-      this.GameOver();
-    } else {
-      this.checkIfOutOfBorders();
-      this.checkIfCollapsed();
-      this.checkIfEat();
-      this.checkIfTouch();
-      this.checkIfEatPoison();
-      this.checkIfDraw();
-    }
+    this.checkIfOutOfBorders();
+    this.checkIfCollapsed();
+    this.checkIfEat();
+    this.checkIfTouch();
+    this.checkIfEatPoison();
+    this.checkIfDraw();
   }
 
   onKeyDown = e => {
@@ -131,7 +129,6 @@ class GameArea extends Component {
   moveEnemySnake = () => {
     let dots = [...this.state.snake2Dots];
     let head = dots[dots.length - 1];
-
     switch (this.state.enemyDirection) {
       case 'RIGHT':
         head = [head[0] + 2, head[1]];
@@ -153,37 +150,19 @@ class GameArea extends Component {
     });
   };
 
-  checkEat = () => {
-    return;
-  };
-
   checkIfEat = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
-    let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
-    const playerName = this.props.location.state.playerName;
     let food = this.state.food;
     if (head[0] === food[0] && head[1] === food[1]) {
-      socket.emit('snakeAte', {
-        playerName
-      });
+      this.setState({ food: [-50, -50] });
+      emitSnakeAte(socket);
       this.props.setScore(this.props.getScore + 1);
-      const isPlayerSnake = true;
-      this.enlargeSnake(isPlayerSnake);
+      this.enlargeSnake('snake');
       this.increaseSpeed();
     }
-    // if (headEnemy[0] === food[0] && headEnemy[1] === food[1]) {
-    //   socket.emit('snakeEnemyEat', {
-    //     playerName,
-    //     snake2Eat: getRandomCord()
-    //   });
-    //   this.props.setEnemyScore(this.props.getEnemyScore + 1);
-    //   this.enlargeSnake('snakeEnemy');
-    //   this.increaseSpeed();
-    // }
   };
   checkIfEatPoison = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
-    let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
     let poison = this.state.poison;
     if (head[0] === poison[0] && head[1] === poison[1]) {
       // this.setState({
@@ -346,11 +325,13 @@ const mapStateToProps = state => ({
   getModalState: state.modalReducer.getModalState,
   getScore: state.gameReducer.getScore,
   getEnemyScore: state.gameReducer.getEnemyScore,
-  getModalText: state.modalReducer.getModalText
+  getModalText: state.modalReducer.getModalText,
+  getSnakeDots: state.gameReducer.getSnakeDots
 });
 export default connect(mapStateToProps, {
   setModal,
   setScore,
   setEnemyScore,
-  setModalText
+  setModalText,
+  setSnakeDot
 })(GameArea);
