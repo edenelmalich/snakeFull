@@ -1,0 +1,137 @@
+body {
+  background: #43a047;
+}
+
+/* Navbar attributes */
+.navbar {
+  padding: 0.5rem 1rem;
+  height: 50px;
+}
+
+/* Main Page attributes */
+.main img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 200px;
+  padding: 1.25rem;
+}
+
+.main header {
+  font-size: 30px;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.MainForm input[type='text'] {
+  display: block;
+  width: 20%;
+  text-indent: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  border: 2px solid #1b5e20;
+}
+
+.MainForm input[type='submit'] {
+  display: block;
+  width: 10%;
+  margin-right: auto;
+  margin-left: auto;
+  border: 2px solid #1b5e20;
+  margin-top: 15px;
+  background: white;
+}
+
+/* Game Area attributes */
+.game-container {
+  position: relative;
+  margin: 25px auto;
+  width: 80rem;
+  height: 600px;
+  background: #43a047;
+}
+
+.game-area {
+  position: relative;
+  margin: 0 auto;
+  width: 600px;
+  height: 600px;
+  background: #aed581;
+  border: 2px solid #1b5e20;
+}
+
+.Snake-cord {
+  position: absolute;
+  width: 3%;
+  height: 3%;
+  background: #00e676;
+  border: 1px solid white;
+  z-index: 2;
+}
+
+.Food {
+  position: absolute;
+  width: 3.5%;
+  height: 3.5%;
+  z-index: 1;
+  background: transparent;
+}
+
+.Score {
+  width: 200px;
+  height: 50px;
+  border: 2px solid #1b5e20;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ScorePlayer2 {
+  position: absolute;
+  width: 200px;
+  height: 50px;
+  right: 0;
+  top: 0;
+  border: 2px solid #1b5e20;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Poison {
+  position: absolute;
+  width: 3.5%;
+  height: 3.5%;
+  z-index: 1;
+  background: transparent;
+}
+
+.Obstacle-cord {
+  position: absolute;
+  width: 3%;
+  height: 3%;
+  background: #1b5e20;
+  border: 1px solid white;
+  z-index: 1;
+}
+
+/* Spinner attributes */
+.spinner-border {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+}
+
+.Spinner-text {
+  font-size: 22px;
+  color: white;
+  padding: 1.25rem;
+  text-align: center;
+}
