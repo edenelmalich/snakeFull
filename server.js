@@ -17,7 +17,7 @@ const getRandomCord = () => {
   let y = Math.floor((Math.random() * (max - min + 1) + min) / 2) * 2;
   return [x, y];
 };
-
+let counterPlayer = 0;
 let gameSession = {
   playerA: {
     name: '',
@@ -46,16 +46,32 @@ io.on('connection', socket => {
     });
   });
   ///
-  socket.on('playerID', ({ id, name }) => {
-    if (io.engine.clientsCount > 1) {
+  socket.on('playerID', (id, name) => {
+    if (counterPlayer === 1) {
       gameSession.playerB.socketID = id;
       gameSession.playerB.name = name;
-    } else {
+      counterPlayer++;
+      if (counterPlayer === 2) {
+        io.emit(
+          'success',
+          gameSession.playerB.socketID !== null ? true : false
+        );
+        counterPlayer = 0;
+      }
+    }
+    if (counterPlayer === 0) {
       gameSession.playerA.socketID = id;
       gameSession.playerA.name = name;
+      counterPlayer++;
+      if (counterPlayer === 2) {
+        io.emit(
+          'success',
+          gameSession.playerB.socketID !== null ? true : false
+        );
+        counterPlayer = 0;
+      }
     }
   });
-  // ------------------------------------------------
 
   socket.on('snakeAte', data => {
     socket.broadcast.emit('enemyAte', {
@@ -64,15 +80,23 @@ io.on('connection', socket => {
     //get random new apple coordinates and send to all players
     io.emit('newAppleCord', { food: getRandomCord() });
   });
+  socket.on('snakeAtePoison', data => {
+    socket.broadcast.emit('enemyAtePoison', {
+      name: data.name
+    });
+    //get random new apple coordinates and send to all players
+    io.emit('newApplePoisonCord', { poison: getRandomCord() });
+  });
 
-  setInterval(() => {
-    io.emit('success', gameSession.playerB.socketID !== null ? true : false);
-  }, 2000);
-  io.emit('getPlayersName', gameSession);
+  io.emit(
+    'setPlayerNames',
+    (gameSession.playerA.name, gameSession.playerB.name)
+  );
+
   socket.on('disconnect', () => {
     console.log('User disconnect');
-    gameSession.playerB.socketID === null;
-    gameSession.playerA.socketID === null;
+    gameSession.playerB.socketID = null;
+    gameSession.playerA.socketID = null;
   });
 });
 

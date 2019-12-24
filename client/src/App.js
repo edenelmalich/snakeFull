@@ -8,7 +8,8 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 // Redux
 import { Provider } from 'react-redux';
 import store from './store';
-
+import socketIOClient from 'socket.io-client';
+const socket = socketIOClient.connect('http://localhost:4000');
 class App extends Component {
   render() {
     return (
@@ -17,8 +18,15 @@ class App extends Component {
           <div className='App'>
             <GameNav />
             <Switch>
-              <Route path='/' component={MainPage} exact />
-              <Route path='/GameArea' component={GameArea} />
+              <Route
+                path='/'
+                render={props => <MainPage socket={socket} {...props} />}
+                exact
+              />
+              <Route
+                path='/GameArea'
+                render={props => <GameArea socket={socket} {...props} />}
+              />
             </Switch>
           </div>
         </BrowserRouter>

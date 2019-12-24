@@ -5,17 +5,22 @@ import '../css/Game.css';
 import { Redirect } from 'react-router-dom';
 // Bootstrap import
 import { Spinner } from 'react-bootstrap';
-// Socket import
-import socketIOClient from 'socket.io-client';
 // Redux
 import { connect } from 'react-redux';
-import { setClientsCounter } from '../actions/gameAction';
+import {
+  setClientsCounter,
+  setPlayer2Name,
+  setPlayerName
+} from '../actions/gameAction';
 
-const socket = socketIOClient.connect('http://localhost:4000');
-const MainPage = ({ getClientsCounter, setClientsCounter }) => {
+const MainPage = ({
+  getClientsCounter,
+  setClientsCounter,
+  socket,
+  setPlayerName
+}) => {
   // useState
   const [getName, setName] = useState('');
-  const [playerName, setPlayerName] = useState('');
   const [spinner, setSpinner] = useState(false);
 
   //   function
@@ -24,17 +29,17 @@ const MainPage = ({ getClientsCounter, setClientsCounter }) => {
   };
   const onSubmit = e => {
     e.preventDefault();
-    socket.emit('playerID', { socketID: socket.id, name: getName });
+    socket.emit('playerID', socket.id, getName);
 
     if (!getClientsCounter) {
       setSpinner(true);
     }
   };
-  socket.on('getPlayersName', data => {
-    setPlayerName(data.playerA.name);
-  });
   socket.on('success', success => {
     setClientsCounter(success);
+  });
+  socket.on('setPlayer1', player2 => {
+    setPlayer2Name(player2);
   });
 
   if (getClientsCounter) {
@@ -42,7 +47,7 @@ const MainPage = ({ getClientsCounter, setClientsCounter }) => {
       <Redirect
         to={{
           pathname: '/GameArea',
-          state: { getName: getName, playerName: playerName }
+          state: { player: getName }
         }}
       />
     );
@@ -72,9 +77,15 @@ const MainPage = ({ getClientsCounter, setClientsCounter }) => {
 };
 MainPage.propTypes = {
   getClientsCounter: PropTypes.bool.isRequired,
-  setClientsCounter: PropTypes.func.isRequired
+  setClientsCounter: PropTypes.func.isRequired,
+  setPlayer2Name: PropTypes.func.isRequired,
+  setPlayerName: PropTypes.func.isRequired
 };
 const mapStateToProps = state => ({
   getClientsCounter: state.gameReducer.getClientsCounter
 });
-export default connect(mapStateToProps, { setClientsCounter })(MainPage);
+export default connect(mapStateToProps, {
+  setClientsCounter,
+  setPlayer2Name,
+  setPlayerName
+})(MainPage);
