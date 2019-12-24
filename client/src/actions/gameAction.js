@@ -4,7 +4,8 @@ import {
   SET_ENEMY_SCORE,
   SET_PLAYER2_NAME,
   SET_PLAYER_NAME,
-  SET_STOP_GAME
+  SET_STOP_GAME,
+  SET_DRAW
 } from './typeAction';
 
 export const setScore = score => dispatch => {
@@ -38,9 +39,14 @@ export const setPlayer2Name = player2 => dispatch => {
   });
 };
 export const setStop = stopState => dispatch => {
-  console.log(stopState);
   dispatch({
     type: SET_STOP_GAME,
     payload: stopState
+  });
+};
+export const setDraw = drawState => dispatch => {
+  dispatch({
+    type: SET_DRAW,
+    payload: drawState
   });
 };

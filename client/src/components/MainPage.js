@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import SnakeLogo from '../img/SnakeLogo.png';
 import '../css/Game.css';
@@ -13,12 +13,7 @@ import {
   setPlayerName
 } from '../actions/gameAction';
 
-const MainPage = ({
-  getClientsCounter,
-  setClientsCounter,
-  socket,
-  setPlayerName
-}) => {
+const MainPage = ({ getClientsCounter, setClientsCounter, socket }) => {
   // useState
   const [getName, setName] = useState('');
   const [spinner, setSpinner] = useState(false);
@@ -29,17 +24,22 @@ const MainPage = ({
   };
   const onSubmit = e => {
     e.preventDefault();
-    socket.emit('playerID', socket.id, getName);
-
+    socket.emit('playerDetails', socket.id, getName);
+    socket.on('numberOfClients', clients => {
+      if (clients === 2) {
+        socket.emit('playGame', {});
+      }
+    });
     if (!getClientsCounter) {
       setSpinner(true);
     }
   };
-  socket.on('success', success => {
+  socket.on('startGame', success => {
     setClientsCounter(success);
   });
-  socket.on('setPlayer1', player2 => {
-    setPlayer2Name(player2);
+  socket.on('enemyName', player => {
+    console.log(player);
+    // setPlayer2Name(player);
   });
 
   if (getClientsCounter) {
@@ -79,10 +79,12 @@ MainPage.propTypes = {
   getClientsCounter: PropTypes.bool.isRequired,
   setClientsCounter: PropTypes.func.isRequired,
   setPlayer2Name: PropTypes.func.isRequired,
-  setPlayerName: PropTypes.func.isRequired
+  setPlayerName: PropTypes.func.isRequired,
+  getStopState: PropTypes.bool.isRequired
 };
 const mapStateToProps = state => ({
-  getClientsCounter: state.gameReducer.getClientsCounter
+  getClientsCounter: state.gameReducer.getClientsCounter,
+  getStopState: state.gameReducer.getStopState
 });
 export default connect(mapStateToProps, {
   setClientsCounter,

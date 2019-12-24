@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import GameArea from './components/GameArea';
 import GameNav from './components/GameNav';
 import MainPage from './components/MainPage';
+import FinishGame from './components/FinishGame';
 // React router dom
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 // Redux
@@ -27,7 +28,12 @@ class App extends Component {
                 path='/GameArea'
                 render={props => <GameArea socket={socket} {...props} />}
               />
+              <Route
+                path='/FinishGame'
+                render={props => <FinishGame socket={socket} {...props} />}
+              />
             </Switch>
+            /
           </div>
         </BrowserRouter>
       </Provider>
