@@ -55,7 +55,7 @@ class GameArea extends Component {
 
   componentDidMount() {
     move = setInterval(this.moveSnake, this.state.speed);
-    // setInterval(this.moveEnemySnake, this.state.speed);
+    moveEnemy = setInterval(this.moveEnemySnake, this.state.speed);
 
     this.props.socket.on('enemyChangedDirection', receivedPayload => {
       this.setState({ enemyDirection: receivedPayload.direction });
