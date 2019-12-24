@@ -33,10 +33,15 @@ io.on('connection', socket => {
   console.log(io.engine.clientsCount);
 
   socket.on('playerDetails', (id, name) => {
-    io.emit('numberOfClients', io.engine.clientsCount);
-    socket.on('playGame', data => {
-      io.emit('startGame', true);
-    });
+    if (gameSession.playerA.socketID === null) {
+      gameSession.playerA.socketID = id;
+      gameSession.playerA.name = name;
+    } else {
+      gameSession.playerB.socketID = id;
+      gameSession.playerB.name = name;
+      socket.emit('startGame', gameSession.playerA.name);
+      socket.broadcast.emit('startGame', gameSession.playerB.name);
+    }
   });
   socket.on('directionChange', data => {
     //letting the other player know that this player has changed direction
@@ -58,9 +63,9 @@ io.on('connection', socket => {
     //get random new apple coordinates and send to all players
     io.emit('newApplePoisonCord', { poison: getRandomCord() });
   });
-
   socket.on('disconnect', () => {
     console.log('User disconnect');
+    sessionStorage = null;
   });
 });
 

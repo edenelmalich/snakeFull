@@ -27,12 +27,14 @@ export const setClientsCounter = stateSuccess => dispatch => {
   });
 };
 export const setPlayerName = player => dispatch => {
+  console.log(player);
   dispatch({
     type: SET_PLAYER_NAME,
     payload: player
   });
 };
 export const setPlayer2Name = player2 => dispatch => {
+  console.log(player2);
   dispatch({
     type: SET_PLAYER2_NAME,
     payload: player2

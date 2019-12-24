@@ -136,7 +136,6 @@ class GameArea extends Component {
 
   moveSnake = () => {
     let dots = [...this.state.snakeDots];
-    console.log(dots[dots.length - 1]);
     let head = dots[dots.length - 1];
 
     switch (this.state.direction) {
@@ -248,7 +247,7 @@ class GameArea extends Component {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
     let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
     if (head[0] === headEnemy[0] && head[1] === headEnemy[1]) {
-      this.prop.setDraw(this.props.getDrawState);
+      this.props.setDraw(true);
       this.GameOver();
     }
   };
@@ -322,6 +321,7 @@ class GameArea extends Component {
 
   GameOver = () => {
     clearInterval(move);
+    clearInterval(moveEnemy);
     this.setState({
       finishGame: true
     });
@@ -334,7 +334,7 @@ class GameArea extends Component {
     return (
       <div className='game-container'>
         <span className='Score'>
-          {this.props.player2} Your Score is: {this.props.getScore}
+          {this.props.player} Your Score is: {this.props.getScore}
         </span>
         <span className='ScorePlayer2'>
           {this.props.player2} Your Score is: {this.props.getEnemyScore}

@@ -33,7 +33,7 @@ const gameReducer = (state = initialState, action) => {
     case SET_STOP_GAME:
       return { ...state, getStopState: payload };
     case SET_DRAW:
-      return { ...state, getDrawState: !payload };
+      return { ...state, getDrawState: payload };
     default:
       return state;
   }

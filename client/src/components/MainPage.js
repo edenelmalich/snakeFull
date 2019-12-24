@@ -13,44 +13,42 @@ import {
   setPlayerName
 } from '../actions/gameAction';
 
-const MainPage = ({ getClientsCounter, setClientsCounter, socket }) => {
+const MainPage = ({
+  getClientsCounter,
+  setClientsCounter,
+  socket,
+  setPlayer2Name,
+  setPlayerName
+}) => {
+  useEffect(() => {
+    console.log(getClientsCounter);
+  }, [getClientsCounter]);
   // useState
   const [getName, setName] = useState('');
   const [spinner, setSpinner] = useState(false);
+  const [enterGame, setEnterGame] = useState(false);
 
   //   function
+
   const onChange = e => {
     setName(e.target.value);
   };
   const onSubmit = e => {
     e.preventDefault();
+    setPlayerName(getName);
     socket.emit('playerDetails', socket.id, getName);
-    socket.on('numberOfClients', clients => {
-      if (clients === 2) {
-        socket.emit('playGame', {});
-      }
+    socket.on('startGame', player2Name => {
+      setPlayer2Name(player2Name);
+      setEnterGame(true);
     });
-    if (!getClientsCounter) {
+
+    if (!enterGame) {
       setSpinner(true);
     }
   };
-  socket.on('startGame', success => {
-    setClientsCounter(success);
-  });
-  socket.on('enemyName', player => {
-    console.log(player);
-    // setPlayer2Name(player);
-  });
 
-  if (getClientsCounter) {
-    return (
-      <Redirect
-        to={{
-          pathname: '/GameArea',
-          state: { player: getName }
-        }}
-      />
-    );
+  if (enterGame) {
+    return <Redirect to='/GameArea' />;
   }
   return (
     <div className='main'>
