@@ -62,9 +62,9 @@ class GameArea extends Component {
       this.setState({ enemyDirection: receivedPayload.direction });
     });
 
-    // this.props.socket.on('newEnemySnake', receivedPayload => {
-    //   this.setState({ snake2Dots: receivedPayload.snakeEnemyDots });
-    // });
+    this.props.socket.on('endGame', () => {
+      this.GameOver();
+    });
     // get the apple cord from the server
     this.props.socket.on('newAppleCord', receivedPayload => {
       this.setState({ food: receivedPayload.food });
@@ -89,12 +89,12 @@ class GameArea extends Component {
   }
 
   componentDidUpdate() {
-    if (this.state.snakeDots.length === 0 || this.state.snake2Dots === 0) {
-      this.GameOver();
+    if (this.state.snakeDots.length === 0) {
+      this.props.socket.emit('gameOver', {});
     } else {
       this.checkIfOutOfBorders();
       this.checkIfCollapsed();
-      this.checkIfEnemyCollapsed();
+
       this.checkIfEat();
       this.checkIfTouch();
       this.checkIfEatPoison();
@@ -210,29 +210,21 @@ class GameArea extends Component {
   // function that check if the snakes had touched on borders
   checkIfOutOfBorders = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
-    let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
     if (head[0] >= 100 || head[1] >= 100 || head[0] < 0 || head[1] < 0) {
-      this.GameOver();
+      this.props.socket.emit('gameOver', {});
     }
   };
   //  function that checks if the snake has touched on obstacle
   checkIfTouch = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
-    let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
     this.state.obstacle.forEach(cord => {
-      if (
-        (head[0] === 80 && head[1] === cord) ||
-        (headEnemy[0] === 80 && headEnemy[1] === cord)
-      ) {
-        this.GameOver();
+      if (head[0] === 80 && head[1] === cord) {
+        this.props.socket.emit('gameOver', {});
       }
     });
     this.state.obstacle1.forEach(cord => {
-      if (
-        (head[0] === 50 && head[1] === cord) ||
-        (headEnemy[0] === 50 && headEnemy[1] === cord)
-      ) {
-        this.GameOver();
+      if (head[0] === 50 && head[1] === cord) {
+        this.props.socket.emit('gameOver', {});
       }
     });
   };
@@ -242,7 +234,7 @@ class GameArea extends Component {
     let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
     if (head[0] === headEnemy[0] && head[1] === headEnemy[1]) {
       this.props.setDraw(true);
-      this.GameOver();
+      this.props.socket.emit('gameOver', {});
     }
   };
   //  function that checks if the snake has touched itself
@@ -252,19 +244,7 @@ class GameArea extends Component {
     snake.pop();
     snake.forEach(dot => {
       if (head[0] === dot[0] && head[1] === dot[1]) {
-        this.GameOver();
-      }
-    });
-  };
-  checkIfEnemyCollapsed = () => {
-    let snake = [...this.state.snake2Dots];
-    console.log(snake);
-    let headEnemy = snake[snake.length - 1];
-    snake.pop();
-    console.log(snake);
-    snake.forEach(dot => {
-      if (headEnemy[0] === dot[0] && headEnemy[1] === dot[1]) {
-        this.GameOver();
+        this.props.socket.emit('gameOver', {});
       }
     });
   };

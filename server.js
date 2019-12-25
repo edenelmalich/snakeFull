@@ -63,6 +63,9 @@ io.on('connection', socket => {
     //get random new apple coordinates and send to all players
     io.emit('newApplePoisonCord', { poison: getRandomCord() });
   });
+  socket.on('gameOver', () => {
+    io.emit('endGame', {});
+  });
   socket.on('disconnect', () => {
     console.log('User disconnect');
 
