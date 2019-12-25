@@ -62,9 +62,9 @@ class GameArea extends Component {
       this.setState({ enemyDirection: receivedPayload.direction });
     });
 
-    this.props.socket.on('newEnemySnake', receivedPayload => {
-      this.setState({ snake2Dots: receivedPayload.snakeEnemyDots });
-    });
+    // this.props.socket.on('newEnemySnake', receivedPayload => {
+    //   this.setState({ snake2Dots: receivedPayload.snakeEnemyDots });
+    // });
     // get the apple cord from the server
     this.props.socket.on('newAppleCord', receivedPayload => {
       this.setState({ food: receivedPayload.food });
@@ -211,16 +211,7 @@ class GameArea extends Component {
   checkIfOutOfBorders = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
     let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
-    if (
-      head[0] >= 100 ||
-      head[1] >= 100 ||
-      headEnemy[0] >= 100 ||
-      headEnemy[1] >= 100 ||
-      head[0] < 0 ||
-      head[1] < 0 ||
-      headEnemy[0] < 0 ||
-      headEnemy[1] < 0
-    ) {
+    if (head[0] >= 100 || head[1] >= 100 || head[0] < 0 || head[1] < 0) {
       this.GameOver();
     }
   };
