@@ -4,13 +4,22 @@ import PropTypes from 'prop-types';
 import SnakeLogo from '../img/SnakeLogo.png';
 // Redux
 import { connect } from 'react-redux';
-import { setStop } from '../actions/gameAction';
+import { setStop, setScore, setEnemyScore } from '../actions/gameAction';
 // react router dom import for redirect to pages
 import { Redirect } from 'react-router-dom';
 
-const FinishGame = ({ getScore, getDrawState, getEnemyScore, player }) => {
+const FinishGame = ({
+  getScore,
+  getDrawState,
+  getEnemyScore,
+  player,
+  setScore,
+  setEnemyScore
+}) => {
   const [finishGame, setFinish] = useState(false);
   if (finishGame) {
+    setScore(0);
+    setEnemyScore(0);
     return <Redirect to='/' />;
   }
   return (
@@ -58,4 +67,6 @@ const mapStateToProps = state => ({
   getDrawState: state.gameReducer.getDrawState,
   player: state.gameReducer.player
 });
-export default connect(mapStateToProps, { setStop })(FinishGame);
+export default connect(mapStateToProps, { setStop, setScore, setEnemyScore })(
+  FinishGame
+);

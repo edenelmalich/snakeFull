@@ -267,8 +267,10 @@ class GameArea extends Component {
   };
   checkIfEnemyCollapsed = () => {
     let snake = [...this.state.snake2Dots];
+    console.log(snake);
     let headEnemy = snake[snake.length - 1];
     snake.pop();
+    console.log(snake);
     snake.forEach(dot => {
       if (headEnemy[0] === dot[0] && headEnemy[1] === dot[1]) {
         this.GameOver();
