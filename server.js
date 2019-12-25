@@ -2,15 +2,19 @@ const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
 const PORT = process.env.PORT || 4000;
-
+const path = require('path');
 const app = express();
 
 const server = http.createServer(app);
 
 const io = socketIO(server);
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-});
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 const getRandomCord = () => {
   let min = 1;
