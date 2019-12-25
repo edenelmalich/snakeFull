@@ -1,3 +1,3 @@
 # snakeFull
 
-[mainPage](mainPage.png)
+[mainPage](https://ibb.co/DY1)
