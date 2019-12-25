@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/css/main.1d8e3ad3.chunk.css",
+    "main.js": "/static/js/main.14bb1414.chunk.js",
+    "main.js.map": "/static/js/main.14bb1414.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.1dc66141.js",
+    "runtime-main.js.map": "/static/js/runtime-main.1dc66141.js.map",
+    "static/js/2.eba0d57a.chunk.js": "/static/js/2.eba0d57a.chunk.js",
+    "static/js/2.eba0d57a.chunk.js.map": "/static/js/2.eba0d57a.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.aad47787e873bf2d485b7b45380e4494.js": "/precache-manifest.aad47787e873bf2d485b7b45380e4494.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.1d8e3ad3.chunk.css.map": "/static/css/main.1d8e3ad3.chunk.css.map",
+    "static/js/2.eba0d57a.chunk.js.LICENSE": "/static/js/2.eba0d57a.chunk.js.LICENSE",
+    "static/media/SnakeLogo.png": "/static/media/SnakeLogo.f2ce4eac.png",
+    "static/media/apple.png": "/static/media/apple.30832537.png",
+    "static/media/poison.png": "/static/media/poison.6d0adcb4.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.1dc66141.js",
+    "static/js/2.eba0d57a.chunk.js",
+    "static/css/main.1d8e3ad3.chunk.css",
+    "static/js/main.14bb1414.chunk.js"
+  ]
+}
