@@ -16,7 +16,6 @@ const getRandomCord = () => {
   let y = Math.floor((Math.random() * (max - min + 1) + min) / 2) * 2;
   return [x, y];
 };
-let counterPlayer = 0;
 
 let gameSession = {
   playerA: {
@@ -36,11 +35,13 @@ io.on('connection', socket => {
     if (gameSession.playerA.socketID === null) {
       gameSession.playerA.socketID = id;
       gameSession.playerA.name = name;
+      socket.broadcast.emit('ready', true);
     } else {
       gameSession.playerB.socketID = id;
       gameSession.playerB.name = name;
       socket.emit('startGame', gameSession.playerA.name);
       socket.broadcast.emit('startGame', gameSession.playerB.name);
+      socket.broadcast.emit('ready', true);
     }
   });
   socket.on('directionChange', data => {
@@ -65,7 +66,9 @@ io.on('connection', socket => {
   });
   socket.on('disconnect', () => {
     console.log('User disconnect');
-    sessionStorage = null;
+
+    gameSession.playerA.socketID = null;
+    gameSession.playerB.socketID = null;
   });
 });
 

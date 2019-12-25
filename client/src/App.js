@@ -10,7 +10,9 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store';
 import socketIOClient from 'socket.io-client';
-const socket = socketIOClient.connect('http://localhost:4000');
+const socket = socketIOClient.connect('http://localhost:4000', {
+  reconnection: true
+});
 class App extends Component {
   render() {
     return (

@@ -27,6 +27,7 @@ const MainPage = ({
   const [getName, setName] = useState('');
   const [spinner, setSpinner] = useState(false);
   const [enterGame, setEnterGame] = useState(false);
+  const [checkReady, setReady] = useState(false);
 
   //   function
 
@@ -41,13 +42,16 @@ const MainPage = ({
       setPlayer2Name(player2Name);
       setEnterGame(true);
     });
-
     if (!enterGame) {
       setSpinner(true);
     }
   };
-
-  if (enterGame) {
+  socket.on('ready', readyState => {
+    if (readyState) {
+      setReady(true);
+    }
+  });
+  if (enterGame && checkReady) {
     return <Redirect to='/GameArea' />;
   }
   return (

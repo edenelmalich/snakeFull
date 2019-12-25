@@ -16,7 +16,6 @@ const FinishGame = ({
 }) => {
   const [finishGame, setFinish] = useState(false);
   if (finishGame) {
-    socket.disconnect();
     return <Redirect to='/' />;
   }
   return (
