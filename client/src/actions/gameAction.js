@@ -1,6 +1,5 @@
 import {
   SET_SCORE,
-  SET_CLIENTS_COUNTER,
   SET_ENEMY_SCORE,
   SET_PLAYER2_NAME,
   SET_PLAYER_NAME,
@@ -20,21 +19,14 @@ export const setEnemyScore = score => dispatch => {
     payload: score
   });
 };
-export const setClientsCounter = stateSuccess => dispatch => {
-  dispatch({
-    type: SET_CLIENTS_COUNTER,
-    payload: stateSuccess
-  });
-};
+
 export const setPlayerName = player => dispatch => {
-  console.log(player);
   dispatch({
     type: SET_PLAYER_NAME,
     payload: player
   });
 };
 export const setPlayer2Name = player2 => dispatch => {
-  console.log(player2);
   dispatch({
     type: SET_PLAYER2_NAME,
     payload: player2

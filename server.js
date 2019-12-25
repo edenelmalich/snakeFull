@@ -29,8 +29,7 @@ let gameSession = {
 };
 io.on('connection', socket => {
   console.log('New user connected');
-  console.log(io.engine.clientsCount);
-
+  // The server gets the details of the players and checks to see if there are enough players to start the game
   socket.on('playerDetails', (id, name) => {
     if (gameSession.playerA.socketID === null) {
       gameSession.playerA.socketID = id;

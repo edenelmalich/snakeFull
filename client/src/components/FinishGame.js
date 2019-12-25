@@ -5,15 +5,10 @@ import SnakeLogo from '../img/SnakeLogo.png';
 // Redux
 import { connect } from 'react-redux';
 import { setStop } from '../actions/gameAction';
+// react router dom import for redirect to pages
 import { Redirect } from 'react-router-dom';
 
-const FinishGame = ({
-  getScore,
-  getDrawState,
-  getEnemyScore,
-  socket,
-  player
-}) => {
+const FinishGame = ({ getScore, getDrawState, getEnemyScore, player }) => {
   const [finishGame, setFinish] = useState(false);
   if (finishGame) {
     return <Redirect to='/' />;
@@ -48,6 +43,7 @@ const FinishGame = ({
     </div>
   );
 };
+// PropTypes
 FinishGame.propType = {
   getScore: PropTypes.number.isRequired,
   getEnemyScore: PropTypes.number.isRequired,
@@ -55,6 +51,7 @@ FinishGame.propType = {
   setStop: PropTypes.func.isRequired,
   player: PropTypes.string.isRequired
 };
+
 const mapStateToProps = state => ({
   getScore: state.gameReducer.getScore,
   getEnemyScore: state.gameReducer.getEnemyScore,

@@ -17,6 +17,7 @@ import {
 } from '../actions/gameAction';
 //  lodash imports
 import { debounce } from 'lodash';
+// react router dom import for redirect to pages
 import { Redirect } from 'react-router-dom';
 
 const emitSnakeAte = debounce(socket => {
@@ -56,7 +57,7 @@ class GameArea extends Component {
   componentDidMount() {
     move = setInterval(this.moveSnake, this.state.speed);
     moveEnemy = setInterval(this.moveEnemySnake, this.state.speed);
-
+    // get the direction from the server after the user click and set the state
     this.props.socket.on('enemyChangedDirection', receivedPayload => {
       this.setState({ enemyDirection: receivedPayload.direction });
     });
@@ -100,7 +101,6 @@ class GameArea extends Component {
       this.checkIfDraw();
     }
   }
-
   onKeyDown = e => {
     switch (e.keyCode) {
       case 38:
@@ -133,7 +133,7 @@ class GameArea extends Component {
         break;
     }
   };
-
+  // function that directs the snake where to move
   moveSnake = () => {
     let dots = [...this.state.snakeDots];
     let head = dots[dots.length - 1];
@@ -181,7 +181,7 @@ class GameArea extends Component {
       snake2Dots: dots
     });
   };
-
+  // function that check if the snake has ate red apple
   checkIfEat = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
     let food = this.state.food;
@@ -193,6 +193,7 @@ class GameArea extends Component {
       this.increaseSpeed();
     }
   };
+  // function that check if the snake has ate poison
   checkIfEatPoison = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
     let poison = this.state.poison;
@@ -206,6 +207,7 @@ class GameArea extends Component {
       this.increaseSpeed();
     }
   };
+  // function that check if the snakes had touched on borders
   checkIfOutOfBorders = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
     let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
@@ -222,6 +224,7 @@ class GameArea extends Component {
       this.GameOver();
     }
   };
+  //  function that checks if the snake has touched on obstacle
   checkIfTouch = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
     let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
@@ -242,7 +245,7 @@ class GameArea extends Component {
       }
     });
   };
-  // A function that checks for draw
+  //  function that checks for draw
   checkIfDraw = () => {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
     let headEnemy = this.state.snake2Dots[this.state.snake2Dots.length - 1];
@@ -251,6 +254,7 @@ class GameArea extends Component {
       this.GameOver();
     }
   };
+  //  function that checks if the snake has touched itself
   checkIfCollapsed = () => {
     let snake = [...this.state.snakeDots];
     let head = snake[snake.length - 1];
@@ -271,7 +275,7 @@ class GameArea extends Component {
       }
     });
   };
-
+  // function that make the snake bigger if he ate red apple
   enlargeSnake = isPlayerSnake => {
     let newSnake;
     if (isPlayerSnake) {
@@ -288,7 +292,7 @@ class GameArea extends Component {
       });
     }
   };
-
+  // function that make the snake smaller if he ate poison
   SnakePoison = isPlayerSnake => {
     let newSnake;
     if (isPlayerSnake) {
@@ -305,7 +309,7 @@ class GameArea extends Component {
       });
     }
   };
-
+  // function for increase speed if snake ate red apple
   increaseSpeed = () => {
     if (this.state.speed > 10) {
       this.setState({
@@ -313,12 +317,12 @@ class GameArea extends Component {
       });
     }
   };
+  // function for decrease speed if snake ate poison
   decreaseSpeed = () => {
     this.setState({
       speed: this.state.speed + 10
     });
   };
-
   GameOver = () => {
     clearInterval(move);
     clearInterval(moveEnemy);
