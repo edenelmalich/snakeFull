@@ -94,7 +94,6 @@ class GameArea extends Component {
     } else {
       this.checkIfOutOfBorders();
       this.checkIfCollapsed();
-
       this.checkIfEat();
       this.checkIfTouch();
       this.checkIfEatPoison();
