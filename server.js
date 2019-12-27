@@ -27,6 +27,10 @@ let gameSession = {
     socketID: null
   }
 };
+app.use(express.static(path.join(__dirname, '../../build')));
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + './index.html');
+});
 io.on('connection', socket => {
   console.log('New user connected');
   // The server gets the details of the players and checks to see if there are enough players to start the game
